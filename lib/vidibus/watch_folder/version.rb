@@ -1,5 +1,5 @@
 module Vidibus
-  module GemTemplate
+  module WatchFolder
     VERSION = '0.1.0'
   end
 end

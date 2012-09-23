@@ -4,3 +4,4 @@ Gemfile.lock
 .bundle
 rdoc
 coverage
+spec/support/watched/*

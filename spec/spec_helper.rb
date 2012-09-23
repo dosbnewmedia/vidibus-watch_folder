@@ -1,17 +1,21 @@
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  add_filter '/spec/'
+end
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'rspec'
 require 'rr'
-require 'vidibus-gem_template'
+require 'vidibus-watch_folder'
 
-require 'support/stubs'
-require 'support/models'
+Dir[File.expand_path('spec/support/**/*.rb')].each { |f| require f }
+
+# Silence logger
+Vidibus::WatchFolder.logger = Logger.new('/dev/null')
 
 Mongoid.configure do |config|
-  name = 'vidibus-gem_template_test'
+  name = 'vidibus-watch_folder_test'
   host = 'localhost'
   config.master = Mongo::Connection.new.db(name)
   # Display MongoDB logs for debugging:

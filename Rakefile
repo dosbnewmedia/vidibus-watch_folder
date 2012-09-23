@@ -4,13 +4,13 @@ require 'bundler'
 require 'rdoc/task'
 require 'rspec'
 require 'rspec/core/rake_task'
-require 'vidibus/gem_template/version'
+require 'vidibus/watch_folder/version'
 
 Bundler::GemHelper.install_tasks
 
 Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "vidibus-sysinfo #{Vidibus::GemTemplate::VERSION}"
+  rdoc.title = "vidibus-sysinfo #{Vidibus::WatchFolder::VERSION}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
   rdoc.options << '--charset=utf-8'
