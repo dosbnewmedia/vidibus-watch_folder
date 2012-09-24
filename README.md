@@ -46,7 +46,7 @@ class Example < Vidibus::WatchFolder::Base
   # Define callbacks to perform when files change.
   #
   # Use filter :when to define events to watch. Supported event types are:
-  #   :added+, :modified, :removed
+  #   :added, :modified, :removed
   #
   # Add filter :delay to perform callback later. Execution will be delayed
   # until the watched file will not have been changed for given period of time.
