@@ -27,7 +27,7 @@ describe Vidibus::WatchFolder::Base do
     end
 
     it 'should set up folders within path' do
-      Dir.entries(instance.path).should eq(%w[. .. in out])
+      Dir.entries(instance.path).sort.should eq(%w[. .. in out])
     end
 
     it 'should raise an error if no root has been configured' do
