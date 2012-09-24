@@ -46,7 +46,8 @@ describe Vidibus::WatchFolder do
       let(:path) { "#{instance.path}/in/whatever" }
 
       it 'should detect new files in each root' do
-        mock(Listen).to(*this.roots, :latency => 0.1)
+        args = this.roots + [{:latency => 0.1}]
+        mock(Listen).to(*args)
         this.listen
       end
 

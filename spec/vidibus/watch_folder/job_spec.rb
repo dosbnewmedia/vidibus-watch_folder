@@ -32,7 +32,7 @@ describe Vidibus::WatchFolder::Job do
         stub_time
         id = BSON::ObjectId('4e4cda52fe197f7e19000001')
         mock(Delayed::Job).enqueue(this, :run_at => Time.now+42) do
-          OpenStruct.new(:id => id)
+          Struct.new(:id).new(id)
         end
         this.enqueue!.should eq(id)
       end
@@ -48,7 +48,7 @@ describe Vidibus::WatchFolder::Job do
         stub_time
         id = BSON::ObjectId('4e4cda52fe197f7e19000001')
         mock(Delayed::Job).enqueue(this) do
-          OpenStruct.new(:id => id)
+          Struct.new(:id).new(id)
         end
         this.enqueue!.should eq(id)
       end

@@ -30,7 +30,8 @@ module Vidibus
       roots.uniq!
       roots_regex = /(?:#{roots.join('|')})/
       logger.debug("Vidibus::WatchFolder.listen to #{roots.join(',')}")
-      Listen.to(*roots, :latency => 0.1) do |modified, added, removed|
+      args = roots + [{:latency => 0.1}]
+      Listen.to(*args) do |modified, added, removed|
         EVENTS.each do |event|
           eval(event).each do |path|
             begin
