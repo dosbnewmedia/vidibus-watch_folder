@@ -30,7 +30,10 @@ module Vidibus
         end
       end
 
-      # TODO: Describe
+      # Handle event for given file path.
+      # Unless a checksum is provided, a asynchronous job will be started.
+      # If provided checksum matches the current one (or if execution
+      # shall not be delayed), appropriate callbacks will be performed.
       def handle(event, file_path, last_checksum = nil)
         return unless File.exist?(file_path) && !File.directory?(file_path)
         callbacks = self.class.config[:callback]
@@ -54,7 +57,7 @@ module Vidibus
 
       class << self
 
-        # TODO: Describe
+        # Set root path of this kind of watch folder.
         def root(path)
           path = File.expand_path(path)
           unless Util::Directory.valid?(path)
@@ -66,13 +69,25 @@ module Vidibus
           config[:root] = path
         end
 
-        # TODO: Describe
+        # Define folders to create automatically when an instance of this
+        # kind of watch folder is created.
         def folders(*args)
           raise ConfigError, 'Define folders' unless args.any?
           config[:folders] = string_list(args)
         end
 
-        # TODO: Describe
+        # Define callbacks to perform when files change.
+        #
+        # Add filter :when to define events to watch. Supported event types
+        # are :added, :modified, an :removed
+        #
+        # Add filter :delay to perform callback later. Execution will then be
+        # delayed until the watched file will not have been changed for given
+        # period of time. This is useful for waiting until an upload is
+        # completed. If no delay has been configured, execution will be
+        # asynchronous nonetheless.
+        #
+        # Provide :folders to limit this callback to certain folders.
         def callback(method, options = {})
           config[:callback] ||= {}
           opts = {:method => method}
@@ -98,7 +113,8 @@ module Vidibus
           @config = value
         end
 
-        # TODO: Describe
+        # Find an instance of this kind of watch folder by its UUID.
+        # Will raise an exception if no instance can be found.
         def find_by_uuid(uuid)
           found = where(:uuid => uuid).first || begin
             raise(Mongoid::Errors::DocumentNotFound.new(self, :uuid => uuid))
