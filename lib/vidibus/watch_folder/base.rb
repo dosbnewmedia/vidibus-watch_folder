@@ -44,6 +44,7 @@ module Vidibus
           end
           matching = handlers.select { |c| c[:when].include?(event) }
           matching.each do |handler|
+            next if handler[:ignore] && file_path.match(handler[:ignore])
             checksum ||= Vidibus::WatchFolder.checksum(file_path)
             delay = handler[:delay]
             if checksum == last_checksum || (last_checksum && !delay)
@@ -87,6 +88,8 @@ module Vidibus
         # completed. If no delay has been configured, execution will be
         # asynchronous nonetheless.
         #
+        # Set filter :ignore to exclude file names matching given regex.
+        #
         # Provide :folders to limit this callback to certain folders.
         def callback(method, options = {})
           config[:callback] ||= {}
@@ -96,6 +99,9 @@ module Vidibus
           end
           if delay = delay_options(options)
             opts[:delay] = delay
+          end
+          if ignore = ignore_options(options)
+            opts[:ignore] = ignore
           end
           folders_options(options).each do |folder|
             config[:callback][folder] ||= []
@@ -150,6 +156,14 @@ module Vidibus
             raise ConfigError, 'Delay must be defined in seconds'
           end
           delay
+        end
+
+        def ignore_options(options)
+          return unless ignore = options.delete(:ignore)
+          unless ignore.is_a?(Regexp)
+            raise ConfigError, 'Ignore pattern must be a regular expression'
+          end
+          ignore
         end
       end
 

@@ -8,7 +8,7 @@ describe Vidibus::WatchFolder::Base do
       :folders => ['in', 'out'],
       :callback => {
         'in' => [{:method => :process, :delay => 42, :when => ['added']}],
-        :any => [{:method => :process, :when => ['removed']}]
+        :any => [{:method => :process, :when => ['removed'], :ignore => /flv/}]
       }
     }
     klass.create
@@ -167,6 +167,14 @@ describe Vidibus::WatchFolder::Base do
             instance.handle('modified', path)
           end
         end
+
+        context 'if file name should be ignored' do
+          it 'should do noting' do
+            dont_allow(Vidibus::WatchFolder::Job).create
+            dont_allow(instance).process
+            instance.handle('removed', path)
+          end
+        end
       end
 
       context 'when called with checksum' do
@@ -305,6 +313,18 @@ describe Vidibus::WatchFolder::Base do
     it 'should raise an error unless given delay is an integer' do
       expect { klass.callback(:whatever, :delay => 'some') }.
         to raise_error(klass::ConfigError, 'Delay must be defined in seconds')
+    end
+
+    it 'should store an ignore pattern' do
+      klass.callback(:whatever, :ignore => /s.me/)
+      klass.config[:callback].should eq(
+        :any => [{:method => :whatever, :ignore => /s.me/}]
+      )
+    end
+
+    it 'should raise an error unless ignore pattern is a regular expression' do
+      expect { klass.callback(:whatever, :ignore => 'some') }.
+        to raise_error(klass::ConfigError, 'Ignore pattern must be a regular expression')
     end
 
     it 'should store callback for a given folder' do

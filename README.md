@@ -43,11 +43,14 @@ class Example < Vidibus::WatchFolder::Base
   # until the watched file will not have been changed for given period of time.
   # This is useful for waiting until an upload is completed.
   #
+  # Set filter :ignore to exclude file names matching given regex.
+  #
   # Provide :folders to limit this callback to certain folders.
   callback :create_upload, {
     :when => :added,
     :delay => 1.minute,
-    :folders => 'in'
+    :folders => 'in',
+    :ignore => /^\.pureftpd-upload/
   }
   callback :destroy_upload, :when => :removed
 
