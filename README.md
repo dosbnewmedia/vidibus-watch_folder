@@ -19,15 +19,6 @@ gem 'wdm', '~> 0.0.3'
 ```
 
 
-### Logging
-
-In order to redirect logging output to the Rails log, you may equip `initializers/watch_folder.rb` with this content:
-
-```ruby
-Vidibus::WatchFolder.logger = Rails.logger
-```
-
-
 ## Usage
 
 ### Models
