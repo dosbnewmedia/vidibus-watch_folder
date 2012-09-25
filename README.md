@@ -92,7 +92,35 @@ example.destroy
 
 ### Listening for file changes
 
-File changes are detected by performing `Vidibus::WatchFolder.listen`. Beware, this method is blocking, so better spawn a daemon.
+File changes are detected by performing `Vidibus::WatchFolder.listen`. Beware, this method is blocking, so better spawn the daemon.
+
+
+#### Listener daemon
+
+To run the listener as daemon, this gem provides a shell script. Install it with
+
+```
+rails g vidibus:watch_folder
+```
+
+The daemon requires that `gem 'daemons'` is installed. To spawn him, enter
+
+```
+script/watch_folder start
+```
+
+*Possible caveat*
+
+To collect the paths to listen to, `Vidibus::WatchFolder.listen` requires that all classes inheriting `Vidibus::WatchFolder::Base` have been loaded.
+
+Because Rails is autoloading almost everything in development, this requirement is not met without the help of a little hack: To trigger autoloading, the listener collects all aforementioned class names from the `app` directory and constantizes them.
+
+So here's the caveat: If you have watch folder models outside of the `app` directory, you'll have to let the listener know. An initializer is perfect for that:
+
+```ruby
+# Collect all watch folder models in lib, too
+Vidibus::WatchFolder.autoload_paths << '/lib/**/*.rb'
+```
 
 
 ## Testing
