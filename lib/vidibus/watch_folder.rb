@@ -1,6 +1,7 @@
 require 'vidibus/watch_folder/util'
 require 'vidibus/watch_folder/base'
 require 'vidibus/watch_folder/job'
+require 'vidibus/watch_folder/railtie' if defined?(Rails::Railtie)
 
 require 'listen'
 
