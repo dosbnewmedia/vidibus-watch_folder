@@ -51,6 +51,12 @@ describe Vidibus::WatchFolder do
         this.listen
       end
 
+      it 'should autoload classes' do
+        mock(this).autoload
+        stub(Listen).to.with_any_args.yields([], [path], [])
+        this.listen
+      end
+
       it 'should find the appropriate watch folder instance' do
         mock(Vidibus::WatchFolder::Base).find_by_uuid(instance.uuid) do
           instance
@@ -83,6 +89,18 @@ describe Vidibus::WatchFolder do
         stub(Listen).to.with_any_args.yields([], [path], [])
         this.listen
       end
+    end
+  end
+
+  describe '.autoload' do
+    it 'should do noting unless autoload paths have been defined' do
+      dont_allow(Dir)[]
+      this.autoload
+    end
+
+    it 'should return all watch folder classes in autoload paths' do
+      this.autoload_paths << 'spec/support/*.rb'
+      this.autoload.should eq([Example])
     end
   end
 end

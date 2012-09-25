@@ -14,9 +14,10 @@ module Vidibus
 
     EVENTS = %w[added modified removed]
 
-    attr_accessor :roots, :logger
+    attr_accessor :roots, :logger, :autoload_paths
     @roots = []
     @logger = Logger.new(STDOUT)
+    @autoload_paths = []
 
     # Calculate checksum of given file path
     def checksum(path)
@@ -25,6 +26,7 @@ module Vidibus
 
     # Listen for changes within all roots
     def listen
+      autoload
       unless roots.any?
         raise NoRootsError, 'No folders to watch!'
       end
@@ -47,6 +49,14 @@ module Vidibus
           end
         end
       end
+    end
+
+    # Constantize all watch folder class names to trigger autoloading.
+    def autoload
+      return unless autoload_paths.any?
+      list = Dir[*autoload_paths].map do |f|
+        File.read(f)[/class ([^<]+) < Vidibus::WatchFolder::Base/, 1]
+      end.compact.map { |k| k.constantize }
     end
   end
 end
