@@ -103,7 +103,7 @@ The daemon requires that `gem 'daemons'` is installed. To spawn him, enter
 script/watch_folder start
 ```
 
-*Possible caveat*
+#### Possible caveat
 
 To collect the paths to listen to, `Vidibus::WatchFolder.listen` requires that all classes inheriting `Vidibus::WatchFolder::Base` have been loaded.
 
