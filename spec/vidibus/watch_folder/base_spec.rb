@@ -231,7 +231,7 @@ describe Vidibus::WatchFolder::Base do
 
     it 'should raise an error if given argument is not a folder' do
       expect { klass.root('/does-not-exist') }.
-        to raise_error(klass::ConfigError, 'Given root must be a folder')
+        to raise_error(klass::ConfigError, "Given root '/does-not-exist' must be a read and writable folder")
     end
 
     it 'should not raise an error for valid relative paths' do

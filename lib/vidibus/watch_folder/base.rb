@@ -62,7 +62,7 @@ module Vidibus
         def root(path)
           path = File.expand_path(path)
           unless Util::Directory.valid?(path)
-            raise ConfigError, 'Given root must be a folder'
+            raise ConfigError, "Given root '#{path}' must be a read and writable folder"
           end
           unless Vidibus::WatchFolder.roots.include?(path)
             Vidibus::WatchFolder.roots << path
