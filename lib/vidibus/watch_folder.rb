@@ -32,7 +32,7 @@ module Vidibus
       end
       roots.uniq!
       roots_regex = /(?:#{roots.join('|')})/
-      logger.debug("[#{Time.now.utc}] - Listen to #{roots.join(',')}")
+      logger.debug("[#{Time.now.utc}] - Listening to #{roots.join(',')}")
       args = roots + [{:latency => 0.1}]
       Listen.to(*args) do |modified, added, removed|
         EVENTS.each do |event|
@@ -43,6 +43,7 @@ module Vidibus
               begin
                 Base.find_by_uuid(uuid).handle(event, path)
               rescue Mongoid::Errors::DocumentNotFound
+                logger.error %([#{Time.now.utc}] - Can't find Vidibus::WatchFolder::Base #{uuid})
               end
             rescue => e
               logger.error("[#{Time.now.utc}] - ERROR in Vidibus::WatchFolder.listen:\n#{e.inspect}\n---\n#{e.backtrace.join("\n")}")
