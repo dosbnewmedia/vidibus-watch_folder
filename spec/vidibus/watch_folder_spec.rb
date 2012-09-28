@@ -89,7 +89,39 @@ describe Vidibus::WatchFolder do
         stub(Listen).to.with_any_args.yields([], [path], [])
         this.listen
       end
+
+      context 'with path_mapping defined' do
+        after do
+          Vidibus::WatchFolder.path_mapping = []
+        end
+
+        it 'should work if path_mapping is correct' do
+          Vidibus::WatchFolder.path_mapping << [/.+\/vidibus-watch_folder\/spec\//, '.+']
+          mock(Vidibus::WatchFolder::Base).find_by_uuid(instance.uuid) do
+            instance
+          end
+          stub(instance).handle.with_any_args
+          stub(Listen).to.with_any_args.yields([], [path], [])
+          this.listen
+        end
+
+        it 'should not work if path_mapping is wrong' do
+          Vidibus::WatchFolder.path_mapping << [/.+\/vidibus-watch_folder\/spec\//, '_broken_']
+          dont_allow(Vidibus::WatchFolder::Base).with_any_args
+          stub(Listen).to.with_any_args.yields([], [path], [])
+          this.listen
+        end
+      end
     end
+  end
+
+  context 'with path_mapping defined' do
+      let(:root) { File.expand_path('spec/support/watched') }
+      let(:instance) do
+        Vidibus::WatchFolder::Base.config = {:root => root}
+        Vidibus::WatchFolder::Base.create
+      end
+    Vidibus::WatchFolder.path_mapping
   end
 
   describe '.autoload' do
