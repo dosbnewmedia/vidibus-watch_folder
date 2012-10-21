@@ -79,4 +79,43 @@ describe Vidibus::WatchFolder::Job do
       Vidibus::WatchFolder::Job.create(*args)
     end
   end
+
+  describe '.delete_all' do
+    let(:this) do
+      args = [watch_folder.uuid, 'added', path, '<checksum>', nil]
+      Vidibus::WatchFolder::Job.new(*args).enqueue!
+    end
+
+    context 'with existing jobs' do
+      before do
+        this
+      end
+
+      it 'should remove all jobs for the given file' do
+        Vidibus::WatchFolder::Job.delete_all(watch_folder.uuid, 'added', path)
+        Delayed::Backend::Mongoid::Job.count.should eq(0)
+      end
+
+      it 'should note remove jobs for different files' do
+        Vidibus::WatchFolder::Job.delete_all(watch_folder.uuid, 'added', 'whatever')
+        Delayed::Backend::Mongoid::Job.count.should eq(1)
+      end
+
+      it 'should note remove jobs for different events' do
+        Vidibus::WatchFolder::Job.delete_all(watch_folder.uuid, 'modified', path)
+        Delayed::Backend::Mongoid::Job.count.should eq(1)
+      end
+
+      it 'should note remove jobs of different watch folder instances' do
+        Vidibus::WatchFolder::Job.delete_all('whatever', 'added', path)
+        Delayed::Backend::Mongoid::Job.count.should eq(1)
+      end
+    end
+
+    context 'without existing jobs' do
+      it 'should not fail' do
+        expect { Vidibus::WatchFolder::Job.delete_all(watch_folder.uuid, 'added', path) }.not_to raise_error
+      end
+    end
+  end
 end

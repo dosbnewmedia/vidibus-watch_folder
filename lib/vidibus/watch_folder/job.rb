@@ -25,8 +25,15 @@ module Vidibus
         raise ArgumentError, 'Provide UUID, event, path, checksum, and an optional delay'
       end
 
-      def self.create(*args)
-        new(*args).enqueue!
+      class << self
+        def create(*args)
+          new(*args).enqueue!
+        end
+
+        def delete_all(uuid, event, path)
+          regex = /Vidibus::WatchFolder::Job\nuuid: #{uuid}\nevent: #{event}\npath: #{path}\n/
+          Delayed::Backend::Mongoid::Job.delete_all(:handler => regex)
+        end
       end
 
       private
