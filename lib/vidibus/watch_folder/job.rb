@@ -31,7 +31,7 @@ module Vidibus
         end
 
         def delete_all(uuid, event, path)
-          regex = /Vidibus::WatchFolder::Job\nuuid: #{uuid}\nevent: #{event}\npath: #{path}\n/
+          regex = /Vidibus::WatchFolder::Job\s*\nuuid: #{uuid}\nevent: #{event}\npath: #{path}\n/
           Delayed::Backend::Mongoid::Job.delete_all(:handler => regex)
         end
       end
