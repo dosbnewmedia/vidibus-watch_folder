@@ -50,6 +50,7 @@ module Vidibus
             if checksum == last_checksum || (last_checksum && !delay)
               send(handler[:method], event, file_path)
             else
+              Job.delete_all(uuid, event, file_path)
               Job.create(uuid, event, file_path, checksum, delay)
             end
           end

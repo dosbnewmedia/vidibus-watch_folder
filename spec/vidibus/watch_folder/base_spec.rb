@@ -145,6 +145,12 @@ describe Vidibus::WatchFolder::Base do
             mock(Vidibus::WatchFolder::Job).create(*args)
             instance.handle('removed', path)
           end
+
+          it 'should delete all existing jobs for this file' do
+            args = [instance.uuid, 'removed', path]
+            mock(Vidibus::WatchFolder::Job).delete_all(*args)
+            instance.handle('removed', path)
+          end
         end
 
         context 'with a delayed callback configured for event type' do
@@ -156,6 +162,12 @@ describe Vidibus::WatchFolder::Base do
 
           it 'should not trigger the callback' do
             dont_allow(instance).process.with_any_args
+            instance.handle('added', path)
+          end
+
+          it 'should delete all existing jobs for this file' do
+            args = [instance.uuid, 'added', path]
+            mock(Vidibus::WatchFolder::Job).delete_all(*args)
             instance.handle('added', path)
           end
         end
@@ -189,6 +201,12 @@ describe Vidibus::WatchFolder::Base do
             dont_allow(Vidibus::WatchFolder::Job).create.with_any_args
             instance.handle('added', path, '<checksum>')
           end
+
+          it 'should not delete any job' do
+            stub(instance).process.with_any_args
+            dont_allow(Vidibus::WatchFolder::Job).delete_all.with_any_args
+            instance.handle('added', path, '<checksum>')
+          end
         end
 
         context 'that differs from the current one' do
@@ -201,6 +219,12 @@ describe Vidibus::WatchFolder::Base do
 
             it 'should not trigger the callback' do
               dont_allow(instance).process.with_any_args
+              instance.handle('added', path, '<different>')
+            end
+
+            it 'should delete all existing jobs for this file' do
+              args = [instance.uuid, 'added', path]
+              mock(Vidibus::WatchFolder::Job).delete_all(*args)
               instance.handle('added', path, '<different>')
             end
           end
@@ -216,6 +240,12 @@ describe Vidibus::WatchFolder::Base do
             it 'should not create a job' do
               stub(instance).process.with_any_args
               dont_allow(Vidibus::WatchFolder::Job).create.with_any_args
+              instance.handle('removed', path, '<different>')
+            end
+
+            it 'should not delete any job' do
+              stub(instance).process.with_any_args
+              dont_allow(Vidibus::WatchFolder::Job).delete_all.with_any_args
               instance.handle('removed', path, '<different>')
             end
           end
