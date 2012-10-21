@@ -69,4 +69,14 @@ describe Vidibus::WatchFolder::Job do
       expect { this.perform }.not_to raise_error
     end
   end
+
+  describe '.create' do
+    it 'should create a new job with given args and enqueue it' do
+      args = [watch_folder.uuid, 'added', path, '<checksum>', nil]
+      this = OpenStruct.new
+      mock(Vidibus::WatchFolder::Job).new(*args) { this }
+      mock(this).enqueue!
+      Vidibus::WatchFolder::Job.create(*args)
+    end
+  end
 end
