@@ -125,7 +125,7 @@ describe Vidibus::WatchFolder do
   end
 
   describe '.autoload' do
-    it 'should do noting unless autoload paths have been defined' do
+    it 'should do nothing unless autoload paths have been defined' do
       dont_allow(Dir)[]
       this.autoload
     end
