@@ -139,6 +139,7 @@ If you need more control over the callbacks, you may load just the recipes witho
 require 'vidibus/watch_folder/capistrano/recipes'
 ```
 
+
 ### Shared folders
 
 In case you want to put files into a shared folder, you may run into a validation issue. Here's a configuration for our watch folder example that gets symlinked with a twist:
