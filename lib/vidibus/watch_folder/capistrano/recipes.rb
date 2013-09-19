@@ -18,7 +18,7 @@ Capistrano::Configuration.instance.load do
       end
 
       def roles
-        fetch(:delayed_job_server_role, :app)
+        fetch(:app)
       end
 
       desc 'Stop the watch_folder process'
