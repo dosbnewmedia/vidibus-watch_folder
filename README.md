@@ -194,4 +194,4 @@ end
 
 ## Copyright
 
-&copy; 2012 André Pankratz. See LICENSE for details.
+&copy; 2012-2013 André Pankratz. See LICENSE for details.
