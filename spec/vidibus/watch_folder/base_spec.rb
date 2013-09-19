@@ -108,13 +108,12 @@ describe Vidibus::WatchFolder::Base do
     end
 
     it 'should work with event and path' do
-      expect { instance.handle('modified', path) }.
-        not_to raise_error(ArgumentError)
+      expect { instance.handle('modified', path) }.not_to raise_error
     end
 
     it 'should work with event, path, and checksum' do
       expect { instance.handle('modified', path, '<checksum>') }.
-        not_to raise_error(ArgumentError)
+        not_to raise_error
     end
 
     it 'should return unless file exists' do
@@ -299,15 +298,15 @@ describe Vidibus::WatchFolder::Base do
     end
 
     it 'should accept simple strings as arguments' do
-      expect { klass.folders('in', 'out') }.not_to raise_error(klass::ConfigError)
+      expect { klass.folders('in', 'out') }.not_to raise_error
     end
 
     it 'should accept symbols as arguments' do
-      expect { klass.folders(:in, :out) }.not_to raise_error(klass::ConfigError)
+      expect { klass.folders(:in, :out) }.not_to raise_error
     end
 
     it 'should accept relative paths as arguments' do
-      expect { klass.folders('in/special') }.not_to raise_error(klass::ConfigError)
+      expect { klass.folders('in/special') }.not_to raise_error
     end
 
     it 'should store folders as strings in config' do
