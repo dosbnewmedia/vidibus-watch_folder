@@ -30,7 +30,7 @@ describe Vidibus::WatchFolder::Job do
     context 'on a job with delay' do
       it 'should create a delayed job with delay and return its id' do
         stub_time
-        id = BSON::ObjectId('4e4cda52fe197f7e19000001')
+        id = Moped::BSON::ObjectId('4e4cda52fe197f7e19000001')
         mock(Delayed::Job).enqueue(this, :run_at => Time.now+42) do
           Struct.new(:id).new(id)
         end
@@ -46,7 +46,7 @@ describe Vidibus::WatchFolder::Job do
 
       it 'should create a delayed job without delay and return its id' do
         stub_time
-        id = BSON::ObjectId('4e4cda52fe197f7e19000001')
+        id = Moped::BSON::ObjectId('4e4cda52fe197f7e19000001')
         mock(Delayed::Job).enqueue(this) do
           Struct.new(:id).new(id)
         end
