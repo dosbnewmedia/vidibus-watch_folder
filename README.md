@@ -1,4 +1,4 @@
-# Vidibus::WatchFolder [![](http://travis-ci.org/vidibus/vidibus-watch_folder.png)](http://travis-ci.org/vidibus/vidibus-watch_folder)
+# Vidibus::WatchFolder [![Build Status](https://travis-ci.org/vidibus/vidibus-watch_folder.png)](https://travis-ci.org/vidibus/vidibus-watch_folder)
 
 This gem lets you create multipe watch folders within your application, e.g. to provide individual FTP mount points for customers, maybe in combination with [Vidibus::Pureftpd](https://github.com/vidibus/vidibus-pureftpd).
 
