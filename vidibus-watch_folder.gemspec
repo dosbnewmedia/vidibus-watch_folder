@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/vidibus/vidibus-watch_folder'
   s.summary     = 'Watch folders based on Mongoid with asynchronous processing'
   s.description = 'Create multiple watch folders within your application, e.g. to provide individual FTP mount points for customers.'
+  s.license     = 'MIT'
 
   s.required_rubygems_version = '>= 1.3.6'
   s.rubyforge_project         = 'vidibus-watch_folder'
