@@ -92,7 +92,9 @@ describe Vidibus::WatchFolder::Base do
       ]
       FileUtils.mkdir_p("#{instance.path}/out/it/")
       files.each { |f| FileUtils.touch(f) }
-      instance.files.should eq(files)
+      instance.files.should have(2).files
+      instance.files.should include(files[0])
+      instance.files.should include(files[1])
     end
   end
 
