@@ -2,7 +2,7 @@
 
 This gem lets you create multipe watch folders within your application, e.g. to provide individual FTP mount points for customers, maybe in combination with [Vidibus::Pureftpd](https://github.com/vidibus/vidibus-pureftpd).
 
-To store each watch folder configuration, [Mongoid](http://mongoid.org/en/mongoid/index.html) (~> 2.5) is used. Files are processed asynchronously with [DelayedJob](https://github.com/collectiveidea/delayed_job).
+To store each watch folder configuration, [Mongoid](http://mongoid.org/en/mongoid/index.html) (>= 3) is used. Files are processed asynchronously with [DelayedJob](https://github.com/collectiveidea/delayed_job).
 
 This gem is part of [Vidibus](http://vidibus.org), an open source toolset for building distributed (video) applications.
 
