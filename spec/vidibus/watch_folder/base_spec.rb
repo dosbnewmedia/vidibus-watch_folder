@@ -23,7 +23,7 @@ describe Vidibus::WatchFolder::Base do
 
   describe 'creating' do
     it 'should set up the path' do
-      File.exist?(instance.path).should be_true
+      File.exist?(instance.path).should be_truthy
     end
 
     it 'should set up folders within path' do
@@ -48,7 +48,7 @@ describe Vidibus::WatchFolder::Base do
   describe 'destroying' do
     it 'should remove the path' do
       instance.destroy
-      File.exist?(instance.path).should be_false
+      File.exist?(instance.path).should be_falsey
     end
 
     it 'should raise an error if path is very short (for security reasons)' do
@@ -92,7 +92,7 @@ describe Vidibus::WatchFolder::Base do
       ]
       FileUtils.mkdir_p("#{instance.path}/out/it/")
       files.each { |f| FileUtils.touch(f) }
-      instance.files.should have(2).files
+      instance.files.size.should eq(2)
       instance.files.should include(files[0])
       instance.files.should include(files[1])
     end

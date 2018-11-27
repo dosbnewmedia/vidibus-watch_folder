@@ -25,4 +25,8 @@ RSpec.configure do |config|
       c.name !~ /system/
     end.each(&:drop)
   end
+
+  config.after(:each) do
+    Delayed::Backend::Mongoid::Job.destroy_all
+  end
 end
