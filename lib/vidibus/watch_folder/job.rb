@@ -1,5 +1,4 @@
 require 'delayed_job_mongoid'
-require "rbconfig"
 
 module Vidibus
   module WatchFolder
@@ -32,19 +31,10 @@ module Vidibus
         end
 
         def delete_all(uuid, event, path)
-          if ruby_2?
-            regex = /Vidibus::WatchFolder::Job\s*\nuuid: #{uuid}\nevent: #{event}\npath: "#{path}"\n/
-          else
-            regex = /Vidibus::WatchFolder::Job\s*\nuuid: #{uuid}\nevent: #{event}\npath: #{path}\n/
-          end
+          regex = /Vidibus::WatchFolder::Job\s*\nuuid: #{uuid}\nevent: #{event}\npath: "#{path}"\n/
           Delayed::Backend::Mongoid::Job.delete_all(:handler => regex)
         end
 
-        private
-
-        def ruby_2?
-          RbConfig::CONFIG["MAJOR"].to_i >= 2
-        end
       end
 
       private
