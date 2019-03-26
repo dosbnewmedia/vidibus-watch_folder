@@ -31,7 +31,7 @@ describe Vidibus::WatchFolder::Job do
       it 'should create a delayed job with delay and return its id' do
         stub_time
         id = Moped::BSON::ObjectId('4e4cda52fe197f7e19000001')
-        mock(Delayed::Job).enqueue(this, :run_at => Time.now+42) do
+        allow(Delayed::Job).to receive(:enqueue).with(this, :run_at => Time.now+42) do
           Struct.new(:id).new(id)
         end
         this.enqueue!.should eq(id)
@@ -47,7 +47,7 @@ describe Vidibus::WatchFolder::Job do
       it 'should create a delayed job without delay and return its id' do
         stub_time
         id = Moped::BSON::ObjectId('4e4cda52fe197f7e19000001')
-        mock(Delayed::Job).enqueue(this) do
+        allow(Delayed::Job).to receive(:enqueue).with(this) do
           Struct.new(:id).new(id)
         end
         this.enqueue!.should eq(id)
@@ -57,13 +57,13 @@ describe Vidibus::WatchFolder::Job do
 
   describe '#perform' do
     it 'should call #handle on watch folder instance' do
-      mock(Vidibus::WatchFolder::Base).find_by_uuid(watch_folder.uuid) { this }
-      mock(this).handle('added', path, '<checksum>')
+      allow(Vidibus::WatchFolder::Base).to receive(:find_by_uuid).with(watch_folder.uuid) { this }
+      expect(this).to receive(:handle).with('added', path, '<checksum>')
       this.perform
     end
 
     it 'should fail silently if WatchFolder does not exist' do
-      mock(Vidibus::WatchFolder::Base).find_by_uuid(watch_folder.uuid) do
+      allow(Vidibus::WatchFolder::Base).to receive(:find_by_uuid).with(watch_folder.uuid) do
         raise Mongoid::Errors::DocumentNotFound.new(Vidibus::WatchFolder::Base, :uuid => watch_folder.uuid)
       end
       expect { this.perform }.not_to raise_error
@@ -74,8 +74,8 @@ describe Vidibus::WatchFolder::Job do
     it 'should create a new job with given args and enqueue it' do
       args = [watch_folder.uuid, 'added', path, '<checksum>', nil]
       this = OpenStruct.new
-      mock(Vidibus::WatchFolder::Job).new(*args) { this }
-      mock(this).enqueue!
+      allow(Vidibus::WatchFolder::Job).to receive(:new).with(*args) { this }
+      allow(this).to receive(:enqueue!)
       Vidibus::WatchFolder::Job.create(*args)
     end
   end

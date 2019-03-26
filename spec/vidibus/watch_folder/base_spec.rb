@@ -52,7 +52,7 @@ describe Vidibus::WatchFolder::Base do
     end
 
     it 'should raise an error if path is very short (for security reasons)' do
-      stub(instance).path { '/tmp/' }
+      allow(instance).to receive(:path) { '/tmp/' }
       expect { instance.destroy }.
         to raise_error(klass::ConfigError, '/tmp/ is too short! Exiting for security reasons.')
     end
@@ -102,7 +102,7 @@ describe Vidibus::WatchFolder::Base do
     let(:path) { in_file_path }
 
     before do
-      stub(Vidibus::WatchFolder).checksum(path) { '<checksum>' }
+      allow(Vidibus::WatchFolder).to receive(:checksum).with(path) { '<checksum>' }
     end
 
     it 'should raise an error when called without arguments' do
@@ -119,22 +119,22 @@ describe Vidibus::WatchFolder::Base do
     end
 
     it 'should return unless file exists' do
-      mock(File).exist?(path) { false }
-      dont_allow(Vidibus::WatchFolder).checksum
+      allow(File).to receive(:exist?).with(path) { false }
+      expect(Vidibus::WatchFolder).not_to receive(:checksum)
       instance.handle('modified', path)
     end
 
     it 'should return if file is a directory' do
-      stub(File).exist?(path) { true }
-      mock(File).directory?(path) { true }
-      dont_allow(Vidibus::WatchFolder).checksum
+      allow(File).to receive(:exist?).with(path) { true }
+      allow(File).to receive(:directory?).with(path) { true }
+      expect(Vidibus::WatchFolder).not_to receive(:checksum)
       instance.handle('modified', path)
     end
 
     context 'valid file input' do
       before do
-        stub(File).exist?(path) { true }
-        stub(File).directory?(path) { false }
+        allow(File).to receive(:exist?).with(path) { true }
+        allow(File).to receive(:directory?).with(path) { false }
       end
 
       context 'when called without checksum' do
@@ -143,13 +143,13 @@ describe Vidibus::WatchFolder::Base do
 
           it 'should create a job without delay' do
             args = [instance.uuid, 'removed', path, '<checksum>', nil]
-            mock(Vidibus::WatchFolder::Job).create(*args)
+            allow(Vidibus::WatchFolder::Job).to receive(:create).with(*args)
             instance.handle('removed', path)
           end
 
           it 'should delete all existing jobs for this file' do
             args = [instance.uuid, 'removed', path]
-            mock(Vidibus::WatchFolder::Job).delete_all(*args)
+            allow(Vidibus::WatchFolder::Job).to receive(:delete_all).with(*args)
             instance.handle('removed', path)
           end
         end
@@ -157,34 +157,34 @@ describe Vidibus::WatchFolder::Base do
         context 'with a delayed callback configured for event type' do
           it 'should create a job with delay' do
             args = [instance.uuid, 'added', path, '<checksum>', 42]
-            mock(Vidibus::WatchFolder::Job).create(*args)
+            allow(Vidibus::WatchFolder::Job).to receive(:create).with(*args)
             instance.handle('added', path)
           end
 
           it 'should not trigger the callback' do
-            dont_allow(instance).process.with_any_args
+            expect(instance).to_not receive(:process)
             instance.handle('added', path)
           end
 
           it 'should delete all existing jobs for this file' do
             args = [instance.uuid, 'added', path]
-            mock(Vidibus::WatchFolder::Job).delete_all(*args)
+            allow(Vidibus::WatchFolder::Job).to receive(:delete_all).with(*args)
             instance.handle('added', path)
           end
         end
 
         context 'without callbacks configured for event type' do
           it 'should do noting' do
-            dont_allow(Vidibus::WatchFolder::Job).create
-            dont_allow(instance).process
+            expect(Vidibus::WatchFolder::Job).to_not receive(:create)
+            expect(instance).to_not receive(:process)
             instance.handle('modified', path)
           end
         end
 
         context 'if file name should be ignored' do
           it 'should do noting' do
-            dont_allow(Vidibus::WatchFolder::Job).create
-            dont_allow(instance).process
+            expect(Vidibus::WatchFolder::Job).to_not receive(:create)
+            expect(instance).to_not receive(:process)
             instance.handle('removed', path)
           end
         end
@@ -193,19 +193,19 @@ describe Vidibus::WatchFolder::Base do
       context 'when called with checksum' do
         context 'that equals the current one' do
           it 'should trigger the callback' do
-            mock(instance).process('added', path)
+            allow(instance).to receive(:process).with('added', path)
             instance.handle('added', path, '<checksum>')
           end
 
           it 'should not create a job' do
-            stub(instance).process.with_any_args
-            dont_allow(Vidibus::WatchFolder::Job).create.with_any_args
+            allow(instance).to receive(:process)
+            expect(Vidibus::WatchFolder::Job).to_not receive(:create)
             instance.handle('added', path, '<checksum>')
           end
 
           it 'should not delete any job' do
-            stub(instance).process.with_any_args
-            dont_allow(Vidibus::WatchFolder::Job).delete_all.with_any_args
+            allow(instance).to receive(:process)
+            expect(Vidibus::WatchFolder::Job).to_not receive(:delete_all)
             instance.handle('added', path, '<checksum>')
           end
         end
@@ -214,18 +214,18 @@ describe Vidibus::WatchFolder::Base do
           context 'for a callback with delay' do
             it 'should create a job with current checksum' do
               args = [instance.uuid, 'added', path, '<checksum>', 42]
-              mock(Vidibus::WatchFolder::Job).create(*args)
+              allow(Vidibus::WatchFolder::Job).to receive(:create).with(*args)
               instance.handle('added', path, '<different>')
             end
 
             it 'should not trigger the callback' do
-              dont_allow(instance).process.with_any_args
+              expect(instance).to_not receive(:process)
               instance.handle('added', path, '<different>')
             end
 
             it 'should delete all existing jobs for this file' do
               args = [instance.uuid, 'added', path]
-              mock(Vidibus::WatchFolder::Job).delete_all(*args)
+              allow(Vidibus::WatchFolder::Job).to receive(:delete_all).with(*args)
               instance.handle('added', path, '<different>')
             end
           end
@@ -234,19 +234,19 @@ describe Vidibus::WatchFolder::Base do
             let(:path) { out_file_path }
 
             it 'should trigger the callback' do
-              mock(instance).process('removed', path)
+              allow(instance).to receive(:process).with('removed', path)
               instance.handle('removed', path, '<different>')
             end
 
             it 'should not create a job' do
-              stub(instance).process.with_any_args
-              dont_allow(Vidibus::WatchFolder::Job).create.with_any_args
+              allow(instance).to receive(:process)
+              expect(Vidibus::WatchFolder::Job).to_not receive(:create)
               instance.handle('removed', path, '<different>')
             end
 
             it 'should not delete any job' do
-              stub(instance).process.with_any_args
-              dont_allow(Vidibus::WatchFolder::Job).delete_all.with_any_args
+              allow(instance).to receive(:process)
+              expect(Vidibus::WatchFolder::Job).to_not receive(:delete_all)
               instance.handle('removed', path, '<different>')
             end
           end

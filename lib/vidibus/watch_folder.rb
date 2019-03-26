@@ -34,7 +34,7 @@ module Vidibus
       roots.uniq!
       logger.debug("[#{Time.now.utc}] - Listening to #{roots.join(',')}")
       args = roots + [{:latency => 0.1}]
-      Listen.to(*args) do |modified, added, removed|
+      listener = Listen.to(*args) do |modified, added, removed|
         EVENTS.each do |event|
           eval(event).each do |path|
             logger.debug %([#{Time.now.utc}] - #{event}: #{path})
@@ -52,6 +52,8 @@ module Vidibus
           end
         end
       end
+      listener.start
+      sleep
     end
 
     # Constantize all watch folder class names to trigger autoloading.

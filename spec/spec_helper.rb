@@ -6,7 +6,6 @@ end
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'rspec'
-require 'rr'
 require 'vidibus-watch_folder'
 
 Dir[File.expand_path('spec/support/**/*.rb')].each { |f| require f }
@@ -19,7 +18,6 @@ Mongoid.configure do |config|
 end
 
 RSpec.configure do |config|
-  config.mock_with :rr
   config.before(:each) do
     Mongoid::Sessions.default.collections.select do |c|
       c.name !~ /system/

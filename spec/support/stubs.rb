@@ -13,10 +13,10 @@ def stub_time(string = nil, &block)
   @now ||= Time.now
   string ||= Time.now.to_s(:db)
   now = Time.parse(string.to_s)
-  stub(Time).now {now}
+  allow(Time).to receive(:now) {now}
   if block_given?
     yield
-    stub(Time).now {@now}
+    allow(Time).to receive(:now) { @now }
   end
   now
 end
