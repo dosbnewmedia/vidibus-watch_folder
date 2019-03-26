@@ -20,9 +20,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project         = 'vidibus-watch_folder'
 
   s.add_dependency 'mongoid', '~> 3'
-  s.add_dependency 'listen', '~> 0.5'
-  s.add_dependency 'rb-fsevent', '~> 0.9.1'
-  s.add_dependency 'rb-inotify', '~> 0.8.8'
+  s.add_dependency 'listen'
   s.add_dependency 'vidibus-uuid'
   s.add_dependency 'delayed_job_mongoid'
 
